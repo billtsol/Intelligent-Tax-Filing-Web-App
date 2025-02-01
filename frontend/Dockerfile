@@ -4,10 +4,10 @@ FROM node:18-alpine AS base
 # 2. Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
-WORKDIR /app
+WORKDIR /app/frontend
 
 # 3. Copy the package.json and lock files
-COPY frontend/package.json frontend/yarn.lock* frontend/package-lock.json* frontend/pnpm-lock.yaml* ./
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
   elif [ -f package-lock.json ]; then npm ci; \
@@ -17,9 +17,9 @@ RUN \
 
 # 4. Build the Next.js app
 FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY frontend .
+WORKDIR /app/frontend
+COPY --from=deps /app/frontend/node_modules ./frontend/node_modules
+COPY . /app/frontend
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
@@ -29,20 +29,20 @@ RUN \
 
 # 5. Create the final production image
 FROM base AS runner
-WORKDIR /app
+WORKDIR /app/frontend
 
 ENV NODE_ENV production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy the built files from the builder stage
-COPY --from=builder /app/public ./public
+COPY --from=builder /app/frontend/public ./public
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
 # Copy the standalone output and static files
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./ 
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/standalone ./ 
+COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/static ./.next/static
 
 USER nextjs
 
