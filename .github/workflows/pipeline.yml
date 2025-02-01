@@ -20,6 +20,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./Dockerfile
+          file: ./frontend/Dockerfile
           push: false  # Δεν ανεβάζουμε το image, απλά το φτιάχνουμε
           tags: my-app:latest
