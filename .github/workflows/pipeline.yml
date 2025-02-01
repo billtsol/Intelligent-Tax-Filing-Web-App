@@ -38,4 +38,4 @@ jobs:
       # Step to run Django tests
       - name: Run Django Tests 🧪
         run: |
-          docker run --rm -v backend:/app my-django-app python manage.py test
+          docker run --rm my-django-app python manage.py test
