@@ -38,5 +38,4 @@ jobs:
       # Step to run Django tests
       - name: Run Django Tests 🧪
         run: |
-          docker build -t my-django-app:latest ./backend
           docker run --rm my-django-app:latest python manage.py test
