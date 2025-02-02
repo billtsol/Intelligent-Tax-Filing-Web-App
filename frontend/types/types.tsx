@@ -1,25 +1,20 @@
-export interface IncomeItem {
-  category: string
-  amount: number
-}
-
-export interface ExpenseItem {
-  category: string
-  amount: number
-  description: string
-}
+import type React from "react"
 
 export interface TaxData {
-  name: string
-  incomeItems: IncomeItem[]
-  expenseItems: ExpenseItem[]
-  taxLiability?: number
+  fullName: string
+  age: number
+  maritalStatus: string
+  income: number
+  expenses: number
+  taxClass: "Ατομικός φορολογούμενος" | "Οικογενειακός φορολογούμενος" | "Επαγγελματίας ή Επιχειρηματίας" | "Συνταξιούχος" | "Άτομα με ειδικές ανάγκες"
+  additionalIncome: number
+  deductions: number
 }
 
 export interface FormButtonProps {
-  type?: "button" | "submit" | "reset";
-  onClick?: () => void;
-  disabled?: boolean;
-  className?: string;
-  children: React.ReactNode;
+  type?: "button" | "submit" | "reset"
+  onClick?: () => void
+  disabled?: boolean
+  className?: string
+  children: React.ReactNode
 }

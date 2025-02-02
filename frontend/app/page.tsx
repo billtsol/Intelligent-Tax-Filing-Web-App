@@ -1,13 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import TaxCalculatorForm from "@/components/TaxCalculatorForm";
-import ResponseForm from "@/components/ResponseForm";
-import type { TaxData } from "@/types/types";
+import TaxCalculatorForm from "../components/TaxCalculatorForm";
+import ResponseForm from "../components/ResponseForm";
+import type { TaxData } from "../types/types";
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
-  const [data, setData] = useState({} as TaxData);
+  const [data, setData] = useState({
+    additionalIncome: 0,
+    deductions: 0,
+  } as TaxData);
   const [showCalculator, setShowCalculator] = useState(true);
 
   useEffect(() => {
@@ -21,9 +24,9 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
       <div className="container mx-auto p-4">
-        <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-200">
+        <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-200">
           <h1 className="text-3xl font-bold p-6 bg-blue-800 text-white text-center">
-            {showCalculator ? "Tax Calculator" : "AI Tax Advice"}
+            {showCalculator ? "Φόρμα Υποβολής Φορολογικών Πληροφοριών" : "AI Tax Advice"}
           </h1>
           {showCalculator ? (
             <TaxCalculatorForm

@@ -19,24 +19,67 @@ def save_tax_data(request):
 @api_view(['POST'])
 def get_ai_advice(request):
     data = request.data
-    user_name = data.get('name', '')
-    income_items = data.get('incomeItems', [])
-    expense_items = data.get('expenseItems', [])
-    tax_liability = data.get('taxLiability', 0)
 
-    # Construct the message for OpenAI
-    message = f"Ονομα: {user_name}\n\n Εισοδήματα:\n"
-    for item in income_items:
-        message += f"- {item['category']}: {item['amount']}€\n"
-    message += "\n Έξοδα:\n"
-    for item in expense_items:
-        message += f"- {item['category']}: {item['amount']}€\n"
+    # List of required fields
+    required_fields = ['fullName', 'income', 'additionalIncome', 'deductions', 'expenses', 'taxClass', 'maritalStatus', 'age']
+
+    # Check for missing fields
+    missing_fields = [field for field in required_fields if field not in data or data[field] == '']
+
+    if missing_fields:
+        return Response(
+            {'error': f'Missing required fields: {", ".join(missing_fields)}'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    full_name = data.get('fullName', '')
+    income = data.get('income', 0)
+    additional_income = data.get('additionalIncome', 0)
+    deductions = data.get('deductions', 0)
+    expenses = data.get('expenses', 0)
+    tax_class = data.get('taxClass', '')
+    marital_status = data.get('maritalStatus', '')
+    age = data.get('age', 0)
+
+    # Create message
+    message = f"Ονομα: {full_name}\n\n"
+    message += f"Ηλικία: {age}\n"
+    message += f"Κατάσταση Οικογενειακή: {marital_status}\n"
+    message += f"Φορολογική Κατηγορία: {tax_class}\n"
+    message += f"\n Εισόδημα: {income}€\n"
+    message += f"Επιπλέον Εισόδημα: {additional_income}€\n"
+    message += f"Εκπτώσεις: {deductions}€\n"
+    message += f"Έξοδα: {expenses}€\n"
+    
+    # Check if additional income and deductions are not empty
+    additional_income_float = float(additional_income) if additional_income else 0.0
+    deductions_float = float(deductions) if deductions else 0.0
+
+    result = additional_income_float - deductions_float
+
+    # Calculate tax liability
+    tax_liability = float(income) + result - float(expenses)
     message += f"\n Φορολογική Ευθύνη: {tax_liability}€\n\n"
-    message += "Παρακαλώ δώσε μια προσωποποιημένη εξήγηση για τα δεδομένα μου, συμβουλές για τη φορολογική μου ευθύνη και πώς μπορώ να βελτιώσω την οικονομική μου κατάσταση."
 
-    
-    response = client.chat.completions.create(model="gpt-3.5-turbo", messages=[
-        {"role": "user", "content": message}
-    ])
-    
-    return Response({'advice': response.choices[0].message.content})
+    message += "Κάνω φορολογική δήλωση στην Ελλάδα. Θα ήθελα να προτείνεις πιθανές εκπτώσεις φόρου. \
+        Με βάση την φορολογική μου κατηγορία ή την ηλικία ή/και την οικογενειακή κατάσταση, θέλω να αναλύσεις και να μου προτεινεις απαλαγές φορών και έξτρα επιδόματα. \
+            Βάλε μέσα σε ένα <div> και μορφοποίησε την απάντηση σου με την καλύτερη δυνατή μορφή, βάλε  <h1>, <h2>, <ul>, <li> <br> και tailwindCss. (απάντα σε 2ο πρόσωπο)"
+
+    try:
+        # Call OpenAI API
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo", 
+            messages=[
+                {"role": "user", "content": message}
+            ],
+            n=1
+        )
+        advice = response.choices[0].message.content
+        return Response({'advice': advice}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        # Handle OpenAI API errors
+        return Response(
+            {'error': "OpenAI API error"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
