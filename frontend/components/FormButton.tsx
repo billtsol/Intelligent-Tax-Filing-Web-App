@@ -1,5 +1,5 @@
 import React from "react";
-import { FormButtonProps } from "../types/types";
+import { FormButtonProps } from "@/types/types";
 
 export default function FormButton({
   type = "button",

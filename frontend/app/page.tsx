@@ -2,9 +2,13 @@
 
 import { useState, useEffect } from "react";
 import TaxCalculatorForm from "@/components/TaxCalculatorForm";
+import ResponseForm from "@/components/ResponseForm";
+import type { TaxData } from "@/types/types";
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
+  const [data, setData] = useState({} as TaxData);
+  const [showCalculator, setShowCalculator] = useState(true);
 
   useEffect(() => {
     if (darkMode) {
@@ -19,9 +23,18 @@ export default function Home() {
       <div className="container mx-auto p-4">
         <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-colors duration-200">
           <h1 className="text-3xl font-bold p-6 bg-blue-800 text-white text-center">
-            Tax Calculator
+            {showCalculator ? "Tax Calculator" : "AI Tax Advice"}
           </h1>
-          <TaxCalculatorForm darkMode={darkMode} setDarkMode={setDarkMode} />
+          {showCalculator ? (
+            <TaxCalculatorForm
+              darkMode={darkMode}
+              setDarkMode={setDarkMode}
+              setData={setData}
+              setShowCalculator={setShowCalculator}
+            />
+          ) : (
+            <ResponseForm data={data} setShowCalculator={setShowCalculator} />
+          )}
         </div>
       </div>
     </main>

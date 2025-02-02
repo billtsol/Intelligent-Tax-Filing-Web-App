@@ -1,18 +1,19 @@
 export interface IncomeItem {
-  category: string;
-  amount: number;
+  category: string
+  amount: number
 }
 
 export interface ExpenseItem {
-  category: string;
-  amount: number;
-  description: string;
+  category: string
+  amount: number
+  description: string
 }
 
 export interface TaxData {
-  incomeItems: IncomeItem[];
-  expenseItems: ExpenseItem[];
-  taxLiability?: number;
+  name: string
+  incomeItems: IncomeItem[]
+  expenseItems: ExpenseItem[]
+  taxLiability?: number
 }
 
 export interface FormButtonProps {
