@@ -21,7 +21,7 @@ def get_ai_advice(request):
     data = request.data
 
     # List of required fields
-    required_fields = ['fullName', 'income', 'additionalIncome', 'deductions', 'expenses', 'taxClass', 'maritalStatus', 'age']
+    required_fields = ['fullName','age', 'maritalStatus','income', 'expenses', 'taxClass']
 
     # Check for missing fields
     missing_fields = [field for field in required_fields if field not in data or data[field] == '']
@@ -65,21 +65,13 @@ def get_ai_advice(request):
         Με βάση την φορολογική μου κατηγορία ή την ηλικία ή/και την οικογενειακή κατάσταση, θέλω να αναλύσεις και να μου προτεινεις απαλαγές φορών και έξτρα επιδόματα. \
             Βάλε μέσα σε ένα <div> και μορφοποίησε την απάντηση σου με την καλύτερη δυνατή μορφή, βάλε  <h1>, <h2>, <ul>, <li> <br> και tailwindCss. (απάντα σε 2ο πρόσωπο)"
 
-    try:
-        # Call OpenAI API
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo", 
-            messages=[
-                {"role": "user", "content": message}
-            ],
-            n=1
-        )
-        advice = response.choices[0].message.content
-        return Response({'advice': advice}, status=status.HTTP_200_OK)
+    # Call OpenAI API
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo", 
+        messages=[
+            {"role": "user", "content": message}
+        ],
+        n=1
+    )
 
-    except Exception as e:
-        # Handle OpenAI API errors
-        return Response(
-            {'error': "OpenAI API error"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+    return Response({'advice': response.choices[0].message.content})
