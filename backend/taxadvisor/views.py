@@ -67,16 +67,16 @@ def get_ai_advice(request):
             Βάλε μέσα σε ένα <div> και μορφοποίησε την απάντηση σου με την καλύτερη δυνατή μορφή, βάλε  <h1>, <h2>, <ul>, <li> <br> και tailwindCss. (απάντα σε 2ο πρόσωπο)"
 
     # Call OpenAI API
-    # try: 
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo", 
-        messages=[
-            {"role": "user", "content": message}
-        ],
-        n=1
-    )
+    try: 
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo", 
+            messages=[
+                {"role": "user", "content": message}
+            ],
+            n=1
+        )
 
-    # except Exception as e:
-    #     print(e)
-    #     return Response({'error': 'An error occurred while processing your request'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        print(e)
+        return Response({'error': 'An error occurred while processing your request'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response({'advice': response.choices[0].message.content})
