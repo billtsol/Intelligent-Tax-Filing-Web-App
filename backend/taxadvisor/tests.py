@@ -54,27 +54,26 @@ class GetAIAdviceViewTests(TestCase):
         # Check the response status code
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    # @patch('taxadvisor.views.client.chat.completions.create')
-    # def test_get_ai_advice_openai_error(self, mock_openai):
-    #     # Mock the OpenAI API to raise an exception
-    #     mock_openai.side_effect = Exception("OpenAI API error")
+    @patch('taxadvisor.views.client.chat.completions.create')
+    def test_get_ai_advice_openai_error(self, mock_openai):
+        # Mock the OpenAI API to raise an exception
+        mock_openai.side_effect = Exception("OpenAI API error")
 
-    #     # Sample request data
-    #     data = {
-    #         'fullName': 'John Doe',
-    #         'age': 30,
-    #         'maritalStatus': 'Single',
-    #         'income': 50000,
-    #         'expenses': 10000,
-    #         'taxClass': 'Οικογενειακός φορολογούμενος',
-    #     }
+        # Sample request data
+        data = {
+            'fullName': 'John Doe',
+            'age': 30,
+            'maritalStatus': 'Single',
+            'income': 50000,
+            'expenses': 10000,
+            'taxClass': 'Οικογενειακός φορολογούμενος',
+        }
 
-    #     # Make the POST request
-    #     response = self.client.post(ADVISOR_URLS, data, format='json')
+        # Make the POST request
+        response = self.client.post(ADVISOR_URLS, data, format='json')
 
-    #     # Check the response status code
-    #     self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # Check the response status code
+        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    #     # Check the response data
-    #     self.assertIn('error', response.data)
-    #     self.assertEqual(response.data['error'], "OpenAI API error")
+        # Check the response data
+        self.assertIn('error', response.data)

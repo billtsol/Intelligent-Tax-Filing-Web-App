@@ -6,6 +6,7 @@ from .models import TaxData
 from .serializers import TaxDataSerializer
 from openai import OpenAI
 
+# Best practice is to store the API key in an environment variable. import os os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key="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")
 
 @api_view(['POST'])
@@ -66,12 +67,16 @@ def get_ai_advice(request):
             Βάλε μέσα σε ένα <div> και μορφοποίησε την απάντηση σου με την καλύτερη δυνατή μορφή, βάλε  <h1>, <h2>, <ul>, <li> <br> και tailwindCss. (απάντα σε 2ο πρόσωπο)"
 
     # Call OpenAI API
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo", 
-        messages=[
-            {"role": "user", "content": message}
-        ],
-        n=1
-    )
+    try: 
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo", 
+            messages=[
+                {"role": "user", "content": message}
+            ],
+            n=1
+        )
 
+    except Exception as e:
+        print(e)
+        return Response({'error': 'An error occurred while processing your request'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return Response({'advice': response.choices[0].message.content})
