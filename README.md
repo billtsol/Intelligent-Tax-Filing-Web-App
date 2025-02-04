@@ -23,7 +23,7 @@ This project is a full-stack application designed to provide personalized tax ad
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/ai-tax-advisor.git
+   git clone https://github.com/billtsol/Intelligent-Tax-Filing-Web-App.git
    ```
 
 2. Set Up the Backend: 
