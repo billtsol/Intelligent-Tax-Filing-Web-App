@@ -1,4 +1,4 @@
-name: Docker Build & Test and Deploy Next.js
+name: Docker Build & Test Django and Next
 
 on:
   push:
